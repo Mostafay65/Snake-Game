@@ -22,7 +22,7 @@ This project is a simple implementation of the classic Snake game using JavaScri
    cd snake-game
 
 3. **Open the game:**:
-    - You can open the index.html file directly in your web browser to start the game.
+    - You can open the Snake.html file directly in your web browser to start the game.
 
 ## How to Play
 - Start the Game: Open the game in your web browser.
@@ -34,3 +34,8 @@ This project is a simple implementation of the classic Snake game using JavaScri
 - **JavaScript**: Handles the game logic and controls.
 - **HTML5**: Provides the structure for the game interface.
 - **CSS3**: Styles the game elements.
+
+## ScreenShots From the Snake Game:
+![img](/resources/1.png)
+![img](/resources/2.png)
+![img](/resources/3.png)
