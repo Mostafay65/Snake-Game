@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 400px;
+            height: 400px;
+            border: 1px solid white;
+            position: relative;
+        }
+
+        .cell {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="game">
+
+    </div>
+    <script>
+        let dir = {
+            'ArrowUp': 0,
+            'ArrowDown': 1,
+            'ArrowRight': 2,
+            'ArrowLeft': 3
+        }
+        let opposite = [1, 0, 3, 2];
+        class point {
+            constructor(x, y) {
+                this.x = x, this.y = y;
+            }
+            equals(otherPoint) {
+                return this.x === otherPoint.x && this.y === otherPoint.y;
+            }
+        }
+
+        let food = new point(20, 20);
+
+        let snake = {
+            direction: 2,
+            head: new point(0, 0),
+            body: [new point(0, 0)]
+        }
+        function checkCollision() {
+            for (let segment of snake.body) {
+                if (snake.head.equals(segment)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function GetFood() {
+            let p = new point(parseInt(Math.random() * 39), parseInt(Math.random() * 39));
+            while (point in snake.body) {
+                p = new point(parseInt(Math.random() * 39), parseInt(Math.random() * 39))
+            }
+            return p;
+        }
+
+        function DrowCell(x, y, color, type = "") {
+            let cell = document.createElement('div');
+            cell.classList = `cell ${type}`
+            cell.style.backgroundColor = color;
+            cell.style.top = `${x * 10}px`;
+            cell.style.left = `${y * 10}px`;
+            document.querySelector('.container').appendChild(cell);
+        }
+
+        function DrowSnake(KeepTail) {
+            document.querySelector('.container').innerHTML = "";
+            DrowCell(food.x, food.y, "#9D3EE6", "food");
+            for (cell of snake.body) DrowCell(cell.x, cell.y, cell.equals(snake.head) ? "#496AB3" : "#313C54");
+            if (!KeepTail) {
+                snake.body.shift();
+            }
+        }
+
+        function MoveSnake() {
+            let headx = snake.head.x, heady = snake.head.y;
+            if (snake.direction == 0) headx--;
+            else if (snake.direction == 1) headx++;
+            else if (snake.direction == 2) heady++;
+            else heady--;
+            headx = (headx + 40) % 40;
+            heady = (heady + 40) % 40;
+            snake.head = new point(headx, heady);
+            if (checkCollision(snake.head)) {
+                confirm(`game over with score ${snake.body.length}`)
+                snake.body = [new point(0, 0)];
+                snake.direction = 2;
+                snake.head = new point(0, 0);
+                food = new point(20, 20);
+                MoveSnake();
+            }
+            snake.body.push(snake.head);
+            if (snake.head.x == food.x && snake.head.y == food.y) {
+                document.querySelector(".food").remove();
+                food = GetFood();
+                DrowSnake(true);
+            }
+            else DrowSnake(false);
+        }
+        function changeDirwction(key) {
+            if (dir[key] == snake.direction || dir[key] == opposite[snake.direction]) return;
+            snake.direction = dir[key];
+            MoveSnake();
+        }
+
+        document.addEventListener('keydown', function (event) {
+            changeDirwction(event.key);
+        });
+
+        setInterval(MoveSnake, 50);
+    </script>
+</body>
+
+</html>
