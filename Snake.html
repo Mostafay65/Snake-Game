@@ -18,16 +18,16 @@
         }
 
         .container {
-            width: 400px;
-            height: 400px;
+            width: 800px;
+            height: 800px;
             border: 1px solid white;
             position: relative;
         }
 
         .cell {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 16px;
+            height: 16px;
         }
     </style>
 </head>
@@ -37,6 +37,8 @@
 
     </div>
     <script>
+        let ya7lw = new Audio('/resources/ye7lw.mp3');
+        let yabaye = new Audio('/resources/yabaye.mp3');
         let dir = {
             'ArrowUp': 0,
             'ArrowDown': 1,
@@ -44,23 +46,24 @@
             'ArrowLeft': 3
         }
         let opposite = [1, 0, 3, 2];
-        class point {
+        class Point {
             constructor(x, y) {
                 this.x = x, this.y = y;
             }
-            equals(otherPoint) {
-                return this.x === otherPoint.x && this.y === otherPoint.y;
+            equals(PtherPoint) {
+                return this.x === PtherPoint.x && this.y === PtherPoint.y;
             }
         }
 
-        let food = new point(20, 20);
+        let food = new Point(25, 25);
 
         let snake = {
             direction: 2,
-            head: new point(0, 0),
-            body: [new point(0, 0)]
+            head: new Point(0, 0),
+            body: [new Point(0, 0)]
         }
         function checkCollision() {
+
             for (let segment of snake.body) {
                 if (snake.head.equals(segment)) {
                     return true;
@@ -69,11 +72,12 @@
             return false;
         }
 
-        function GetFood() {
-            let p = new point(parseInt(Math.random() * 39), parseInt(Math.random() * 39));
-            while (point in snake.body) {
-                p = new point(parseInt(Math.random() * 39), parseInt(Math.random() * 39))
-            }
+        function generateFood() {
+            debugger
+            let p;
+            do {
+                p = new Point(parseInt(Math.random() * 49), parseInt(Math.random() * 49));
+            } while (snake.body.some(segment => segment.equals(p)));
             return p;
         }
 
@@ -81,8 +85,8 @@
             let cell = document.createElement('div');
             cell.classList = `cell ${type}`
             cell.style.backgroundColor = color;
-            cell.style.top = `${x * 10}px`;
-            cell.style.left = `${y * 10}px`;
+            cell.style.top = `${x * 16}px`;
+            cell.style.left = `${y * 16}px`;
             document.querySelector('.container').appendChild(cell);
         }
 
@@ -101,27 +105,29 @@
             else if (snake.direction == 1) headx++;
             else if (snake.direction == 2) heady++;
             else heady--;
-            headx = (headx + 40) % 40;
-            heady = (heady + 40) % 40;
-            snake.head = new point(headx, heady);
+            headx = (headx + 50) % 50;
+            heady = (heady + 50) % 50;
+            snake.head = new Point(headx, heady);
             if (checkCollision(snake.head)) {
+                yabaye.play();
                 confirm(`game over with score ${snake.body.length}`)
-                snake.body = [new point(0, 0)];
+                snake.body = [new Point(0, 0)];
                 snake.direction = 2;
-                snake.head = new point(0, 0);
-                food = new point(20, 20);
+                snake.head = new Point(0, 0);
+                food = new Point(25, 25);
                 MoveSnake();
             }
             snake.body.push(snake.head);
             if (snake.head.x == food.x && snake.head.y == food.y) {
+                ya7lw.play();
                 document.querySelector(".food").remove();
-                food = GetFood();
+                food = generateFood();
                 DrowSnake(true);
             }
             else DrowSnake(false);
         }
         function changeDirwction(key) {
-            if (dir[key] == snake.direction || dir[key] == opposite[snake.direction]) return;
+            if (key.substr(0, 5) != 'Arrow' || dir[key] == snake.direction || dir[key] == opposite[snake.direction]) return;
             snake.direction = dir[key];
             MoveSnake();
         }
