@@ -30,7 +30,6 @@ This project is a simple implementation of the classic Snake game using JavaScri
 - Objective: The goal is to eat the food that appears on the screen. Each time the snake eats the food, it grows longer, and your score increases.
 - Avoid Collisions: The game ends if the snake runs into itself or the walls.
 
-
 ## Play The Game onling 
 - You can try playing the game [here](https://mostafay65.github.io/Snake-Game/Snake.html)
 ## Technologies Used 
